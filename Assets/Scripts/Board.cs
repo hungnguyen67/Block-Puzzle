@@ -141,4 +141,55 @@ public class Board : MonoBehaviour
         if (r >= 0 && r < Size && c >= 0 && c < Size) return cells[r, c];
         return null;
     }
+
+    public bool CanFit(int[,] shape)
+    {
+        if (shape == null) return false;
+        int rows = shape.GetLength(0);
+        int cols = shape.GetLength(1);
+
+        // BƯỚC 1: Tìm bounding box (Khung bao thực sự) của khối gạch
+        int minR = int.MaxValue, maxR = int.MinValue;
+        int minC = int.MaxValue, maxC = int.MinValue;
+        bool hasAtLeastOne = false;
+        for (int r = 0; r < rows; r++)
+            for (int c = 0; c < cols; c++)
+                if (shape[r, c] == 1) {
+                    minR = Mathf.Min(minR, r); maxR = Mathf.Max(maxR, r);
+                    minC = Mathf.Min(minC, c); maxC = Mathf.Max(maxC, c);
+                    hasAtLeastOne = true;
+                }
+        
+        if (!hasAtLeastOne) return true; // Khối trống thì coi như vừa mọi chỗ
+
+        int shapeH = maxR - minR + 1;
+        int shapeW = maxC - minC + 1;
+
+        // BƯỚC 2: Quét toàn bộ bàn cờ (8x8)
+        for (int r = 0; r <= Size - shapeH; r++)
+        {
+            for (int c = 0; c <= Size - shapeW; c++)
+            {
+                bool canPlaceAtPos = true;
+                // Kiểm tra xem vị trí (r, c) có bị ô nào cản không
+                for (int sr = 0; sr < shapeH; sr++)
+                {
+                    for (int sc = 0; sc < shapeW; sc++)
+                    {
+                        if (shape[minR + sr, minC + sc] == 1)
+                        {
+                            if (cells[r + sr, c + sc].isFilled)
+                            {
+                                canPlaceAtPos = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!canPlaceAtPos) break;
+                }
+                if (canPlaceAtPos) return true; // Tìm thấy ít nhất 1 chỗ trống
+            }
+        }
+        return false;
+    }
 }

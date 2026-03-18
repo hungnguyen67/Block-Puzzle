@@ -12,6 +12,8 @@ public class Block : MonoBehaviour
     private float offsetUp = 4.0f; // Đẩy khối lên cao hơn chuột (Sửa trực tiếp ở đây sẽ có tác dụng ngay)
     private float scaleOnGrab = 1f; // Tỷ lệ khi cầm gạch (để 1 là chuẩn nhất)
 
+    public int[,] ShapeData { get; private set; } // Lưu dữ liệu hình dạng để kiểm tra Game Over
+
     private float _defaultScale = 1f;
     private Vector3 _originalSpawnPos; // Lưu mốc gốc cực kỳ quan trọng
 
@@ -31,6 +33,7 @@ public class Block : MonoBehaviour
 
 public void Initialize(int[,] shapeData)
     {
+        this.ShapeData = shapeData;
         foreach (Transform child in transform) Destroy(child.gameObject);
         foreach (BoxCollider2D col in GetComponents<BoxCollider2D>()) Destroy(col);
 

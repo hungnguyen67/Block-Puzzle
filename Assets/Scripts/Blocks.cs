@@ -80,6 +80,43 @@ public class Blocks : MonoBehaviour
         {
             if (b != null && b.activeSelf) { allUsed = false; break; }
         }
-        if (allUsed) SpawnNewBlocks();
+        
+        if (allUsed) 
+        {
+            SpawnNewBlocks();
+            CheckGameOver();
+        }
+        else
+        {
+            // Kiểm tra xem còn nước đi nào không (Game Over check)
+            CheckGameOver();
+        }
+    }
+
+    private void CheckGameOver()
+    {
+        Board board = Object.FindFirstObjectByType<Board>();
+        if (board == null) return;
+
+        bool anyBlockCanFit = false;
+        foreach (var blockGO in _currentBlocks)
+        {
+            if (blockGO != null && blockGO.activeSelf)
+            {
+                Block blockScript = blockGO.GetComponent<Block>();
+                if (blockScript != null && board.CanFit(blockScript.ShapeData))
+                {
+                    anyBlockCanFit = true;
+                    break;
+                }
+            }
+        }
+
+        if (!anyBlockCanFit)
+        {
+            Debug.LogError("GAME OVER! Không còn chỗ để đặt gạch.");
+            // Ở đây bạn có thể hiện UI thông báo Game Over
+            // Ví dụ: CanvasManager.Instance.ShowGameOver();
+        }
     }
 }
