@@ -75,7 +75,28 @@ public class Board : MonoBehaviour
 
         // Tính điểm dựa trên số hàng/cột xóa được
         int combo = rowsToClear.Count + colsToClear.Count;
-        if (combo > 0) Debug.Log("ĂN COMBO " + combo + "! Cộng điểm: " + (combo * 100));
+        
+        int totalLines = rowsToClear.Count + colsToClear.Count;
+
+        if (totalLines > 0)
+        {
+            // 2. Công thức tính điểm: 100 điểm mỗi hàng/cột (bạn có thể thay đổi tùy ý)
+            int scoreToAdd = totalLines * 100;
+
+            // 3. Gửi điểm sang ScoreManager
+            // Ở đây mình dùng FindFirstObjectByType để tìm Script ScoreManager trong Scene
+            ScoreManager scoreMgr = Object.FindFirstObjectByType<ScoreManager>();
+            
+            if (scoreMgr != null)
+            {
+                scoreMgr.AddScore(scoreToAdd);
+                Debug.Log($"Đã xóa {totalLines} dòng. Cộng {scoreToAdd} điểm!");
+            }
+            else
+            {
+                Debug.LogWarning("Không tìm thấy ScoreManager trong Scene để cộng điểm!");
+            }
+        }
     }
 
     public void SetCellVisibility(int r, int c, bool visible)

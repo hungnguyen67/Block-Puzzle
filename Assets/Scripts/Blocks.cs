@@ -47,7 +47,6 @@ public class Blocks : MonoBehaviour
         _currentBlocks.Clear();
 
         // VỊ TRÍ CỐ ĐỊNH CỤ THỂ CHO 3 KHỐI:
-        // Bạn có thể chỉnh lại X (-2.6, 0, 2.6) và Y (-6.0) cho vừa với màn hình của mình
         Vector3[] fixedPositions = new Vector3[] {
             new Vector3(1.0f, 0.0f, 0), // Khối trái
             new Vector3(4.0f, 0.0f, 0),  // Khối giữa
@@ -114,9 +113,17 @@ public class Blocks : MonoBehaviour
 
         if (!anyBlockCanFit)
         {
-            Debug.LogError("GAME OVER! Không còn chỗ để đặt gạch.");
-            // Ở đây bạn có thể hiện UI thông báo Game Over
-            // Ví dụ: CanvasManager.Instance.ShowGameOver();
+            Debug.Log("Không còn nước đi! Đang bật giao diện Game Over...");
+            
+            // Gọi script GameOverManager để bật UI lên
+            if (GameOverManager.Instance != null)
+            {
+                GameOverManager.Instance.ShowGameOver(0);
+            }
+            else
+            {
+                Debug.LogError("Chưa tìm thấy GameOverManager trong Scene. Bạn đã tạo file GameOverManager.cs và kéo vào Scene chưa?");
+            }
         }
     }
 }
