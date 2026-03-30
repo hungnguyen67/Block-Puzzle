@@ -92,6 +92,9 @@ public class Block : MonoBehaviour
     {
         _isDragging = true;
         
+        // Đưa block ra phía trước cùng khi bắt đầu kéo
+        SetSortingOrder(100);
+
         if (_board != null)
         {
             Cell c0 = _board.GetCellAt(0, 0);
@@ -111,7 +114,8 @@ public class Block : MonoBehaviour
         if (_isDragging)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0;
+            // Đặt Z âm để block gần Camera hơn, giúp nó hiển thị trên UI
+            mousePos.z = -5f; 
 
             // Vị trí mong muốn: chuột ở dưới, block ở trên
             Vector3 targetPos = mousePos + Vector3.up * _blockDragOffset;
@@ -127,6 +131,9 @@ public class Block : MonoBehaviour
             {
                 _isDragging = false;
                 ClearPreview();
+                
+                // Trả lại sorting order mặc định
+                SetSortingOrder(0);
 
                 if (TryPlace())
                 {
@@ -144,6 +151,16 @@ public class Block : MonoBehaviour
             }
         }
     }
+
+    private void SetSortingOrder(int order)
+    {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+        foreach (var sr in renderers)
+        {
+            sr.sortingOrder = order;
+        }
+    }
+
 
     private Vector3 ClampBlockInsideBackground(Vector3 targetPos)
     {
