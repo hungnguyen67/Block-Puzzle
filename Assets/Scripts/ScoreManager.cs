@@ -12,7 +12,6 @@ public class ScoreManager : MonoBehaviour
 
     private void Awake()
     {
-        // Kiểm tra tránh trùng lặp Singleton
         if (Instance == null) {
             Instance = this;
         } else {
@@ -35,8 +34,7 @@ public class ScoreManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            // Hiển thị "DIEM: 000100" chẳng hạn
-            scoreText.text = "DIEM: " + currentScore.ToString();
+            scoreText.text = currentScore.ToString();
         }
     }
 

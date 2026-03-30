@@ -38,7 +38,6 @@ public class Cell : MonoBehaviour
         spriteRenderer.sprite = normalSprite;
         transform.localScale = Vector3.one;
 
-        // Đảm bảo Alpha = 1 khi gạch hiện ra và = 0 khi trống
         Color c = spriteRenderer.color;
         c.a = filled ? 1f : 0f;
         spriteRenderer.color = c;
@@ -48,7 +47,6 @@ public class Cell : MonoBehaviour
     {
         if (!active)
         {
-            // Trả về trạng thái thực tế của ô trên bàn cờ
             spriteRenderer.sprite = normalSprite;
             Color color = spriteRenderer.color;
             color.a = isFilled ? 1f : 0f;
@@ -58,7 +56,6 @@ public class Cell : MonoBehaviour
 
         if (isPotentialClear)
         {
-            // TRẠNG THÁI NHƯ ẢNH 2: Sáng rực cả hàng/cột sắp đầy
             spriteRenderer.sprite = highlightSprite;
             Color color = spriteRenderer.color;
             color.a = 1f;
@@ -66,7 +63,6 @@ public class Cell : MonoBehaviour
         }
         else
         {
-            // Chỉ là bóng của khối đang cầm (Chưa đầy hàng)
             spriteRenderer.sprite = normalSprite;
             Color color = spriteRenderer.color;
             color.a = 0.4f;
@@ -77,7 +73,6 @@ public class Cell : MonoBehaviour
     public void ClearWithAnimation()
     {
         isFilled = false;
-        // BƯỚC QUAN TRỌNG: Chuyển sang highlightSprite để tạo hiệu ứng "Sáng rực" như ảnh
         if (highlightSprite != null) spriteRenderer.sprite = highlightSprite;
         StartCoroutine(AnimateClear());
     }
@@ -92,7 +87,6 @@ public class Cell : MonoBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
             
-            // Hiệu ứng "Pop": Phóng to lên 1.3 lần rồi mới thu về 0
             float s = 1f;
             if (t < 0.2f) s = Mathf.Lerp(1f, 1.3f, t / 0.2f);
             else s = Mathf.Lerp(1.3f, 0f, (t - 0.2f) / 0.8f);
@@ -101,7 +95,6 @@ public class Cell : MonoBehaviour
             yield return null;
         }
 
-        // Sau khi xóa xong, trả về trạng thái mặc định (ẩn đi nhưng không Deactivate để giữ lưới)
         transform.localScale = Vector3.one;
         spriteRenderer.sprite = normalSprite;
         Color finalColor = spriteRenderer.color;

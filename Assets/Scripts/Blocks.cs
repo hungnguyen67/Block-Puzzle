@@ -3,11 +3,16 @@ using System.Collections.Generic;
 
 public class Blocks : MonoBehaviour
 {
-    [SerializeField] private GameObject blockPrefab; 
-    [SerializeField] private Transform[] spawnPoints; 
-    [SerializeField] private float spawnScale = 0.6f; // Kích thước nhỏ mặc định
+    [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private float spawnScale = 0.8f;
 
     private List<GameObject> _currentBlocks = new List<GameObject>();
+
+    void Start()
+    {
+        SpawnNewBlocks();
+    }
 
     void Update()
     {
@@ -16,20 +21,15 @@ public class Blocks : MonoBehaviour
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
 
-            // Kiểm tra khoảng cách chuột tới 3 vị trí đặt khối
-            Vector3[] fixedPositions = new Vector3[] {
-                new Vector3(1.0f, 0.0f, 0),
-                new Vector3(4.0f, 0.0f, 0),
-                new Vector3(7.0f, 0.0f, 0)
-            };
-
             for (int i = 0; i < _currentBlocks.Count; i++)
             {
                 if (_currentBlocks[i] != null && _currentBlocks[i].activeSelf)
                 {
-                    float dist = Vector3.Distance(mousePos, fixedPositions[i]);
-                    // Nếu bấm trong vùng 2.0 đơn vị quanh khối thì cho phép kéo
-                    if (dist < 2.0f) 
+                    Vector3 targetPos = spawnPoints[i].position;
+
+                    float dist = Vector3.Distance(mousePos, targetPos);
+
+                    if (dist < 2.0f)
                     {
                         _currentBlocks[i].GetComponent<Block>().StartDragging();
                         break;
@@ -39,35 +39,29 @@ public class Blocks : MonoBehaviour
         }
     }
 
-    void Start() { SpawnNewBlocks(); }
-
     public void SpawnNewBlocks()
     {
-        foreach (var b in _currentBlocks) if (b != null) Destroy(b);
+        foreach (var b in _currentBlocks)
+        {
+            if (b != null) Destroy(b);
+        }
         _currentBlocks.Clear();
 
-        // VỊ TRÍ CỐ ĐỊNH CỤ THỂ CHO 3 KHỐI:
-        Vector3[] fixedPositions = new Vector3[] {
-            new Vector3(1.0f, 0.0f, 0), // Khối trái
-            new Vector3(4.0f, 0.0f, 0),  // Khối giữa
-            new Vector3(7.0f, 0.0f, 0)   // Khối phải
-        };
-
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < spawnPoints.Length; i++)
         {
-            Vector3 targetPos = fixedPositions[i];
+            Vector3 targetPos = spawnPoints[i].position;
 
             GameObject newBlockGO = Instantiate(blockPrefab, targetPos, Quaternion.identity, transform);
-            
+
             Block blockScript = newBlockGO.GetComponent<Block>();
             if (blockScript != null)
             {
                 int randomIndex = Random.Range(0, Poliominus.Shapes.Length);
                 blockScript.Initialize(Poliominus.Shapes[randomIndex]);
-                
-                // Gán vị trí cố định và tỷ lệ thu nhỏ lúc nằm trong khay
+
                 blockScript.SetDefaultScale(spawnScale, targetPos);
             }
+
             _currentBlocks.Add(newBlockGO);
         }
     }
@@ -75,21 +69,22 @@ public class Blocks : MonoBehaviour
     public void CheckAndResetBlocks()
     {
         bool allUsed = true;
+
         foreach (var b in _currentBlocks)
         {
-            if (b != null && b.activeSelf) { allUsed = false; break; }
+            if (b != null && b.activeSelf)
+            {
+                allUsed = false;
+                break;
+            }
         }
-        
-        if (allUsed) 
+
+        if (allUsed)
         {
             SpawnNewBlocks();
-            CheckGameOver();
         }
-        else
-        {
-            // Kiểm tra xem còn nước đi nào không (Game Over check)
-            CheckGameOver();
-        }
+
+        CheckGameOver();
     }
 
     private void CheckGameOver()
@@ -98,11 +93,13 @@ public class Blocks : MonoBehaviour
         if (board == null) return;
 
         bool anyBlockCanFit = false;
+
         foreach (var blockGO in _currentBlocks)
         {
             if (blockGO != null && blockGO.activeSelf)
             {
                 Block blockScript = blockGO.GetComponent<Block>();
+
                 if (blockScript != null && board.CanFit(blockScript.ShapeData))
                 {
                     anyBlockCanFit = true;
@@ -113,16 +110,11 @@ public class Blocks : MonoBehaviour
 
         if (!anyBlockCanFit)
         {
-            Debug.Log("Không còn nước đi! Đang bật giao diện Game Over...");
-            
-            // Gọi script GameOverManager để bật UI lên
+
+
             if (GameOverManager.Instance != null)
             {
                 GameOverManager.Instance.ShowGameOver(0);
-            }
-            else
-            {
-                Debug.LogError("Chưa tìm thấy GameOverManager trong Scene. Bạn đã tạo file GameOverManager.cs và kéo vào Scene chưa?");
             }
         }
     }

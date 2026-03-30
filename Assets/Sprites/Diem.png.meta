@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5323b41acfd2ffb4eab8e48a05ca7a64
+guid: c510c3a9adbec7e4b91b204b89c183dd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1194771161877757323
-    second: button-replay-normal_0
+      213: 3517396980199808665
+    second: Diem_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,14 +46,14 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -139,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: button-replay-normal_0
+      name: Diem_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 120
-        height: 116
+        x: 30
+        y: 11
+        width: 343
+        height: 338
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b8dba93aa0ea49010800000000000000
-      internalID: 1194771161877757323
+      spriteID: 99e57d2eaed40d030800000000000000
+      internalID: 3517396980199808665
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      button-replay-normal_0: 1194771161877757323
+      Diem_0: 3517396980199808665
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

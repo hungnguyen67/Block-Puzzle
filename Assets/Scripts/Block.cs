@@ -4,22 +4,33 @@ using System.Collections.Generic;
 public class Block : MonoBehaviour
 {
     [SerializeField] private GameObject cellPrefab;
+    [SerializeField] private SpriteRenderer backgroundRenderer; 
+
     private Vector3 _startPos;
     private Board _board;
     private bool _isDragging = false;
     private List<Vector2Int> _previewCoords = new List<Vector2Int>();
 
-    private float offsetUp = 4.0f; // Đẩy khối lên cao hơn chuột (Sửa trực tiếp ở đây sẽ có tác dụng ngay)
-    private float scaleOnGrab = 1f; // Tỷ lệ khi cầm gạch (để 1 là chuẩn nhất)
-
-    public int[,] ShapeData { get; private set; } // Lưu dữ liệu hình dạng để kiểm tra Game Over
+    private float _blockDragOffset = 5.0f; 
+    private float scaleOnGrab = 1f; 
+    private float worldCellSize = 1f; 
+    public int[,] ShapeData { get; private set; } 
 
     private float _defaultScale = 1f;
-    private Vector3 _originalSpawnPos; // Lưu mốc gốc cực kỳ quan trọng
+    private Vector3 _originalSpawnPos; 
 
     void Start()
     {
         _board = Object.FindFirstObjectByType<Board>();
+
+        if (backgroundRenderer == null)
+        {
+            GameObject bg = GameObject.Find("background");
+            if (bg != null)
+            {
+                backgroundRenderer = bg.GetComponent<SpriteRenderer>();
+            }
+        }
     }
 
     public void SetDefaultScale(float scale, Vector3 pos)
@@ -31,7 +42,7 @@ public class Block : MonoBehaviour
         transform.localScale = Vector3.one * _defaultScale;
     }
 
-public void Initialize(int[,] shapeData)
+    public void Initialize(int[,] shapeData)
     {
         this.ShapeData = shapeData;
         foreach (Transform child in transform) Destroy(child.gameObject);
@@ -39,8 +50,6 @@ public void Initialize(int[,] shapeData)
 
         int rows = shapeData.GetLength(0);
         int cols = shapeData.GetLength(1);
-
-        // BƯỚC 1: TÌM KHUNG BAO (BOUNDING BOX) CỦA CÁC Ô CHỨA SỐ 1
         int minRow = int.MaxValue, maxRow = int.MinValue;
         int minCol = int.MaxValue, maxCol = int.MinValue;
 
@@ -58,20 +67,15 @@ public void Initialize(int[,] shapeData)
             }
         }
 
-        // BƯỚC 2: TÍNH TÂM THỰC SỰ CỦA KHỐI (Bỏ qua các hàng/cột số 0 thừa)
         float centerCol = (minCol + maxCol) / 2f;
-        
-        // Căn dọc: GIỮA TUYỆT ĐỐI (Dùng trung điểm để khối luôn nằm tâm điểm spawn)
         float centerRow = (minRow + maxRow) / 2f;
 
-        // BƯỚC 3: SINH RA Ô VÀ CĂN GIỮA TUYỆT ĐỐI
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < cols; c++)
             {
                 if (shapeData[r, c] == 1)
                 {
-                    // Công thức mới ép khối gạch LUÔN mọc ra từ chính giữa tâm của nó
                     Vector3 pos = new Vector3(c - centerCol, r - centerRow, 0);
                     GameObject cell = Instantiate(cellPrefab, transform);
                     cell.transform.localPosition = pos;
@@ -87,6 +91,18 @@ public void Initialize(int[,] shapeData)
     public void StartDragging()
     {
         _isDragging = true;
+        
+        if (_board != null)
+        {
+            Cell c0 = _board.GetCellAt(0, 0);
+            Cell c1 = _board.GetCellAt(0, 1);
+            if (c0 != null && c1 != null)
+            {
+                worldCellSize = Vector3.Distance(c0.transform.position, c1.transform.position);
+                scaleOnGrab = worldCellSize;
+            }
+        }
+
         transform.localScale = Vector3.one * scaleOnGrab; 
     }
 
@@ -94,13 +110,19 @@ public void Initialize(int[,] shapeData)
     {
         if (_isDragging)
         {
-            // DI CHUYỂN
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0;
-            transform.position = mousePos + Vector3.up * offsetUp;
+
+            // Vị trí mong muốn: chuột ở dưới, block ở trên
+            Vector3 targetPos = mousePos + Vector3.up * _blockDragOffset;
+
+            // Giới hạn block trong background
+            targetPos = ClampBlockInsideBackground(targetPos);
+
+            transform.position = targetPos;
+
             UpdatePreview();
 
-            // THẢ CHUỘT (Global check)
             if (Input.GetMouseButtonUp(0))
             {
                 _isDragging = false;
@@ -116,7 +138,6 @@ public void Initialize(int[,] shapeData)
                 }
                 else
                 {
-                    // Nếu đặt hụt, trả về đúng gốc và thu nhỏ
                     transform.position = _originalSpawnPos;
                     transform.localScale = Vector3.one * _defaultScale;
                 }
@@ -124,7 +145,63 @@ public void Initialize(int[,] shapeData)
         }
     }
 
-private bool GetGridPos(Transform child, out int r, out int c)
+    private Vector3 ClampBlockInsideBackground(Vector3 targetPos)
+    {
+        if (backgroundRenderer == null)
+            return targetPos;
+
+        // Bounds của background
+        Bounds bgBounds = backgroundRenderer.bounds;
+
+        // Tính bounds hiện tại của toàn bộ block nếu đặt ở targetPos
+        float minX = float.MaxValue;
+        float maxX = float.MinValue;
+        float minY = float.MaxValue;
+        float maxY = float.MinValue;
+
+        Vector3 offset = targetPos - transform.position;
+
+        foreach (Transform child in transform)
+        {
+            Vector3 futurePos = child.position + offset;
+
+            if (futurePos.x < minX) minX = futurePos.x;
+            if (futurePos.x > maxX) maxX = futurePos.x;
+            if (futurePos.y < minY) minY = futurePos.y;
+            if (futurePos.y > maxY) maxY = futurePos.y;
+        }
+
+    // Tạo độ đệm để block không dính sát mép gỗ
+    float padding = 0.8f;
+
+    // Nếu block tràn trái
+    if (minX < bgBounds.min.x + padding)
+    {
+        targetPos.x += (bgBounds.min.x + padding - minX);
+    }
+
+        // Nếu block tràn phải
+        if (maxX > bgBounds.max.x - padding)
+        {
+            targetPos.x -= (maxX - (bgBounds.max.x - padding));
+        }
+
+        // Nếu block tràn dưới
+        if (minY < bgBounds.min.y + padding)
+        {
+            targetPos.y += (bgBounds.min.y + padding - minY);
+        }
+
+        // Nếu block tràn trên
+        if (maxY > bgBounds.max.y - padding)
+        {
+            targetPos.y -= (maxY - (bgBounds.max.y - padding));
+        }
+
+        return targetPos;
+    }
+
+    private bool GetGridPos(Transform child, out int r, out int c)
     {
         r = -1; c = -1;
         if (_board == null) return false;
@@ -132,18 +209,10 @@ private bool GetGridPos(Transform child, out int r, out int c)
         Cell originCell = _board.GetCellAt(0, 0);
         if (originCell == null) return false;
 
-        // 1. Chỉ đo khoảng cách từ tâm viên gạch tới mốc (0,0) của bàn cờ
-        Vector3 parentPos = transform.position;
-        Vector3 parentDiff = parentPos - originCell.transform.position;
+        Vector3 worldDiff = child.position - originCell.transform.position;
 
-        // 2. BÍ QUYẾT TẠI ĐÂY: Dùng child.localPosition (Tọa độ thiết kế ban đầu)
-        // Thay vì dùng tọa độ thế giới đang bị co giãn, ta cộng thẳng tọa độ gốc của ô con.
-        // Điều này ép các ô con LUÔN cách nhau đúng 1.0 đơn vị toán học.
-        Vector3 logicalChildPos = parentDiff + child.localPosition;
-
-        // 3. Khớp vào lưới chuẩn xác
-        c = Mathf.FloorToInt(logicalChildPos.x + 0.5f);
-        r = Mathf.FloorToInt(logicalChildPos.y + 0.5f);
+        c = Mathf.FloorToInt(worldDiff.x / worldCellSize + 0.5f);
+        r = Mathf.FloorToInt(worldDiff.y / worldCellSize + 0.5f);
 
         return true;
     }
@@ -171,7 +240,6 @@ private bool GetGridPos(Transform child, out int r, out int c)
         if (isValid)
         {
             _previewCoords = newCoords;
-            // GỌI HIỆU ỨNG MỚI: Tự động highlight cả hàng/cột sắp đầy "như ảnh"
             _board.ShowPotentialClears(_previewCoords);
         }
         else

@@ -16,7 +16,6 @@ public class GameOverManager : MonoBehaviour
 
     private void Awake()
     {
-        // Thiết lập Singleton
         if (Instance == null)
         {
             Instance = this;
@@ -36,7 +35,7 @@ public class GameOverManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("GameOverManager: Chưa gán GameOverPanel trong Inspector!");
+// Debug.LogError removed
         }
     }
 
@@ -56,8 +55,6 @@ public class GameOverManager : MonoBehaviour
 
     public void RestartGame()
     {
-        Debug.Log("Đang tải lại game...");
-      
         Time.timeScale = 1f; 
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

@@ -92,5 +92,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Block
   cellPrefab: {fileID: 2810364722062269397, guid: c330d3e6be4f7914c927fd922fe03854, type: 3}
-  offsetUp: 1.2
-  scaleOnGrab: 1.1

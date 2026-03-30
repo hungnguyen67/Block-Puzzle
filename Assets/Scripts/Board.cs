@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -8,10 +9,21 @@ public class Board : MonoBehaviour
     [SerializeField] private Cell cellPrefab;
     [SerializeField] private Transform cellsTransform; 
     
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI bestScoreText;
+
+    [Header("Layout")]
+    [SerializeField] private float yOffset = 0f;
+
     private readonly Cell[,] cells = new Cell[Size, Size];
+    private int currentScore = 0;
+    private int bestScore = 0;
 
     void Start()
     {
+        bestScore = PlayerPrefs.GetInt("BestScore", 0);
+        UpdateScoreUI();
         GenerateBoard();
     }
 
@@ -23,13 +35,12 @@ public class Board : MonoBehaviour
             {
                 cells[r, c] = Instantiate(cellPrefab, cellsTransform);
                 
-                float posX = c + 0.5f; 
-                float posY = r + 0.5f;
+                float posX = c - Size / 2f + 0.5f;
+                float posY = r - Size / 2f + 0.5f + yOffset;
                 cells[r, c].transform.localPosition = new Vector3(posX, posY, 0);
                 
                 cells[r, c].SetFilled(false);
 
-                // Ẩn các ô trên bàn cờ lúc ban đầu
                 SpriteRenderer sr = cells[r, c].GetComponent<SpriteRenderer>();
                 if (sr != null)
                 {
@@ -39,6 +50,12 @@ public class Board : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText != null) scoreText.text = currentScore.ToString();
+        if (bestScoreText != null) bestScoreText.text = bestScore.ToString();
     }
 
     public void CheckAndClearLines()
@@ -58,7 +75,6 @@ public class Board : MonoBehaviour
             if (cFull) colsToClear.Add(i);
         }
 
-        // Tạo tập hợp các ô cần xóa để tránh lặp lại (Fix lỗi syntax)
         HashSet<Vector2Int> cellsToClear = new HashSet<Vector2Int>();
 
         foreach (int r in rowsToClear)
@@ -67,34 +83,30 @@ public class Board : MonoBehaviour
         foreach (int c in colsToClear)
             for (int r = 0; r < Size; r++) cellsToClear.Add(new Vector2Int(r, c));
 
-        // Thực hiện xóa mượt mà từng ô duy nhất
         foreach (Vector2Int coord in cellsToClear)
         {
             cells[coord.x, coord.y].ClearWithAnimation();
         }
 
-        // Tính điểm dựa trên số hàng/cột xóa được
-        int combo = rowsToClear.Count + colsToClear.Count;
-        
         int totalLines = rowsToClear.Count + colsToClear.Count;
 
         if (totalLines > 0)
         {
-            // 2. Công thức tính điểm: 100 điểm mỗi hàng/cột (bạn có thể thay đổi tùy ý)
-            int scoreToAdd = totalLines * 100;
+            int scoreToAdd = totalLines * 10;
+            currentScore += scoreToAdd;
 
-            // 3. Gửi điểm sang ScoreManager
-            // Ở đây mình dùng FindFirstObjectByType để tìm Script ScoreManager trong Scene
-            ScoreManager scoreMgr = Object.FindFirstObjectByType<ScoreManager>();
-            
+            if (currentScore > bestScore)
+            {
+                bestScore = currentScore;
+                PlayerPrefs.SetInt("BestScore", bestScore);
+            }
+
+            UpdateScoreUI();
+
+            ScoreManager scoreMgr = ScoreManager.Instance;
             if (scoreMgr != null)
             {
                 scoreMgr.AddScore(scoreToAdd);
-                Debug.Log($"Đã xóa {totalLines} dòng. Cộng {scoreToAdd} điểm!");
-            }
-            else
-            {
-                Debug.LogWarning("Không tìm thấy ScoreManager trong Scene để cộng điểm!");
             }
         }
     }
@@ -104,7 +116,7 @@ public class Board : MonoBehaviour
         if (r < 0 || r >= Size || c < 0 || c >= Size) return;
 
         Cell cell = cells[r, c];
-        cell.gameObject.SetActive(visible); // Đảm bảo node đang active để sprite hiện ra
+        cell.gameObject.SetActive(visible); 
         cell.SetFilled(visible);
         
         SpriteRenderer sr = cell.GetComponent<SpriteRenderer>();
@@ -118,14 +130,12 @@ public class Board : MonoBehaviour
 
     public void ShowPotentialClears(List<Vector2Int> previewCoords)
     {
-        // 1. Reset lưới về trạng thái ban đầu của từng ô (ẩn các bóng cũ)
         for (int i = 0; i < Size; i++)
             for (int j = 0; j < Size; j++)
                 cells[i, j].SetHighlightPreview(false, false);
 
         if (previewCoords.Count == 0) return;
 
-        // 2. Dự báo hàng/cột nào sẽ đầy nếu đặt khối gạch này xuống
         HashSet<int> potentialRows = new HashSet<int>();
         HashSet<int> potentialCols = new HashSet<int>();
 
@@ -144,13 +154,11 @@ public class Board : MonoBehaviour
             if (cFull) potentialCols.Add(i);
         }
 
-        // 3. HIỆN BÓNG CỦA KHỐI GẠCH (Mờ 40%)
         foreach (Vector2Int coord in previewCoords)
         {
             cells[coord.x, coord.y].SetHighlightPreview(true, false);
         }
 
-        // 4. BƯỚC QUYẾT ĐỊNH (NHƯ ẢNH 2): Nếu là hàng/cột sắp đầy, Sáng rực 100% Alpha và dùng Highlight sprite
         foreach (int r in potentialRows)
             for (int c = 0; c < Size; c++) cells[r, c].SetHighlightPreview(true, true);
 
@@ -169,7 +177,6 @@ public class Board : MonoBehaviour
         int rows = shape.GetLength(0);
         int cols = shape.GetLength(1);
 
-        // BƯỚC 1: Tìm bounding box (Khung bao thực sự) của khối gạch
         int minR = int.MaxValue, maxR = int.MinValue;
         int minC = int.MaxValue, maxC = int.MinValue;
         bool hasAtLeastOne = false;
@@ -181,18 +188,15 @@ public class Board : MonoBehaviour
                     hasAtLeastOne = true;
                 }
         
-        if (!hasAtLeastOne) return true; // Khối trống thì coi như vừa mọi chỗ
+        if (!hasAtLeastOne) return true; 
 
         int shapeH = maxR - minR + 1;
         int shapeW = maxC - minC + 1;
-
-        // BƯỚC 2: Quét toàn bộ bàn cờ (8x8)
         for (int r = 0; r <= Size - shapeH; r++)
         {
             for (int c = 0; c <= Size - shapeW; c++)
             {
                 bool canPlaceAtPos = true;
-                // Kiểm tra xem vị trí (r, c) có bị ô nào cản không
                 for (int sr = 0; sr < shapeH; sr++)
                 {
                     for (int sc = 0; sc < shapeW; sc++)
@@ -208,7 +212,7 @@ public class Board : MonoBehaviour
                     }
                     if (!canPlaceAtPos) break;
                 }
-                if (canPlaceAtPos) return true; // Tìm thấy ít nhất 1 chỗ trống
+                if (canPlaceAtPos) return true; 
             }
         }
         return false;
