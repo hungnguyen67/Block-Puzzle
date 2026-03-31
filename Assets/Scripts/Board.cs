@@ -20,6 +20,8 @@ public class Board : MonoBehaviour
     private int currentScore = 0;
     private int bestScore = 0;
 
+    public int GetCurrentScore() => currentScore;
+
     void Start()
     {
         bestScore = PlayerPrefs.GetInt("BestScore", 0);
@@ -94,12 +96,6 @@ public class Board : MonoBehaviour
         {
             int scoreToAdd = totalLines * 10;
             currentScore += scoreToAdd;
-
-            if (currentScore > bestScore)
-            {
-                bestScore = currentScore;
-                PlayerPrefs.SetInt("BestScore", bestScore);
-            }
 
             UpdateScoreUI();
 

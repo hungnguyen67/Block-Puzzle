@@ -18,9 +18,9 @@ public static class Poliominus
         new int[,] {{1, 1, 1, 1}},
         new int[,] {{1}, {1}, {1}, {1}},
 
-        // 5. Lines (5 cells)
-        new int[,] {{1, 1, 1, 1, 1}},
-        new int[,] {{1}, {1}, {1}, {1}, {1}},
+        // // 5. Lines (5 cells)
+        // new int[,] {{1, 1, 1, 1, 1}},
+        // new int[,] {{1}, {1}, {1}, {1}, {1}},
 
         // 6. Squares
         new int[,] {{1, 1}, {1, 1}},

@@ -110,11 +110,15 @@ public class Blocks : MonoBehaviour
 
         if (!anyBlockCanFit)
         {
-
-
-            if (GameOverManager.Instance != null)
+            if (GameplayUIManager.Instance != null)
             {
-                GameOverManager.Instance.ShowGameOver(0);
+                int finalScore = 0;
+                if (board != null)
+                {
+                    finalScore = board.GetCurrentScore();
+                }
+                
+                GameplayUIManager.Instance.ShowGameOver(finalScore);
             }
         }
     }
