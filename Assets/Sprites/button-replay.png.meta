@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8cf5786b65c72894ebe46976ce42d638
+guid: 6092f071cfbbe89419ad3473dacc2287
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 591648534587557283
-    second: Screenshot_2026-03-30_143954-removebg-preview_0
+      213: 7397620116612541139
+    second: button-replay_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,9 +46,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Screenshot_2026-03-30_143954-removebg-preview_0
+      name: button-replay_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 10
-        width: 198
-        height: 201
+        x: 41
+        y: 52
+        width: 401
+        height: 399
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3a5c8ff1535f53800800000000000000
-      internalID: 591648534587557283
+      spriteID: 3da69f14d40a9a660800000000000000
+      internalID: 7397620116612541139
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Screenshot_2026-03-30_143954-removebg-preview_0: 591648534587557283
+      button-replay_0: 7397620116612541139
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

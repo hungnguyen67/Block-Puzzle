@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2cba113b29a488c419ce9e160c6cbe29
+guid: 3efd8c75ef789e846be66accee2e3960
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4526787698273656128
-    second: Screenshot_2026-03-30_162903-removebg-preview_0
+      213: -5651728687791437943
+    second: setting-soundoff_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,9 +46,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Screenshot_2026-03-30_162903-removebg-preview_0
+      name: setting-soundoff_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 17
-        width: 204
-        height: 201
+        x: 42
+        y: 58
+        width: 399
+        height: 393
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0c26ac6829e9d21c0800000000000000
-      internalID: -4526787698273656128
+      spriteID: 9878e4dd3b60191b0800000000000000
+      internalID: -5651728687791437943
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Screenshot_2026-03-30_162903-removebg-preview_0: -4526787698273656128
+      setting-soundoff_0: -5651728687791437943
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

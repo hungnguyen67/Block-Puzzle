@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c510c3a9adbec7e4b91b204b89c183dd
+guid: e514ff5b3b31e12438be82966774db10
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3517396980199808665
-    second: Diem_0
+      213: -736954056721880963
+    second: Gemini_Generated_Image_8h00pa8h00pa8h00-removebg-preview_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -53,7 +53,7 @@ TextureImporter:
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 0
+  spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -109,53 +109,27 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Diem_0
+      name: Gemini_Generated_Image_8h00pa8h00pa8h00-removebg-preview_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 11
-        width: 343
-        height: 338
+        x: 41
+        y: 56
+        width: 401
+        height: 395
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 99e57d2eaed40d030800000000000000
-      internalID: 3517396980199808665
+      spriteID: d782f41a030d5c5f0800000000000000
+      internalID: -736954056721880963
       vertices: []
       indices: 
       edges: []
@@ -164,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 18c4aed93fb7fc049ba9829466187cb8
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Diem_0: 3517396980199808665
+      Gemini_Generated_Image_8h00pa8h00pa8h00-removebg-preview_0: -736954056721880963
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
