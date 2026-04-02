@@ -10,9 +10,11 @@ public class GameplayUIManager : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject gameOverPanel;
 
-    [Header("Text Elements")]
+    [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI finalScoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
+    [SerializeField] private UnityEngine.UI.Image musicIcon;
+    [SerializeField] private UnityEngine.UI.Image soundIcon;
 
     [Header("Reward Flow")]
     [SerializeField] private RewardFlow rewardFlow;
@@ -35,15 +37,23 @@ public class GameplayUIManager : MonoBehaviour
     #region Settings
     public void OpenSettings()
     {
+        // MỚI: Chỉ cần chơi click, nút bấm sẽ tự động nhận diện rồi
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayClick();
+        }
+
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(true);
-            Time.timeScale = 0f; // Pause game if needed
+            Time.timeScale = 0f; 
         }
     }
 
     public void CloseSettings()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
+
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
@@ -55,6 +65,8 @@ public class GameplayUIManager : MonoBehaviour
     #region Navigation
     public void RestartGame()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
+
         Time.timeScale = 1f;
         hasRevived = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -62,6 +74,8 @@ public class GameplayUIManager : MonoBehaviour
 
     public void GoToHome()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
+
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }

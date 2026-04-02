@@ -24,6 +24,12 @@
 ### 📺 Hệ thống Quảng cáo & Hồi sinh
 - **Xóa hàng cứu trợ**: Xem quảng cáo để xóa 2 hàng trung tâm sau khi thua, giúp giải phóng không gian bàn cờ và tiếp tục phá kỷ lục điểm số.
 
+### 🔈 Hệ thống Âm thanh chuyên nghiệp (Pro Audio System)
+- **Quản lý tập trung (AudioManager)**: Hệ thống "Nhạc trưởng" duy nhất, xuyên suốt tất cả các Scene, đảm bảo trải nghiệm âm thanh không bao giờ bị ngắt quãng.
+- **Tự động nhận diện (AudioButtonHelper)**: Bạn không bao giờ phải kéo gán Icon nút bấm bằng tay giữa các Scene nữa. Nút bấm sẽ "tự giác" tìm đến Manager để cập nhật hình ảnh chuẩn xác khi bật/tắt.
+- **Lưu trữ vĩnh viễn**: Mọi cài đặt về Bật/Tắt Nhạc nền (Music) hay Hiệu ứng (Sound) đều được lưu lại, người chơi chỉ cần cài đặt một lần duy nhất.
+- **Hiệu ứng sống động**: Tích hợp 4 loại âm thanh: Nhạc nền (mellow), tiếng Click (phản hồi), đặt gạch (thật tay), và xóa khối (tưng bừng).
+
 ## 🕹️ Cách chơi
 1. Kéo các khối từ 3 khay chứa bên dưới (hoặc từ ô **HOLD**) vào bảng.
 2. Xếp các khối để tạo thành một hàng ngang hoặc dọc đầy đủ để ghi điểm.

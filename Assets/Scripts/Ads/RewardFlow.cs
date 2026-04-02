@@ -68,6 +68,7 @@ public class RewardFlow : MonoBehaviour
 
     private void OnReviveClicked()
     {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayClick();
         if (countdownCoroutine != null) StopCoroutine(countdownCoroutine);
         
         if (SingleAdController.Instance != null)

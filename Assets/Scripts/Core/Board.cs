@@ -94,6 +94,8 @@ public class Board : MonoBehaviour
 
         if (totalLines > 0)
         {
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(AudioManager.Instance.clearLineSound);
+
             int scoreToAdd = totalLines * 10;
             currentScore += scoreToAdd;
 
@@ -128,7 +130,7 @@ public class Board : MonoBehaviour
     {
         for (int i = 0; i < Size; i++)
             for (int j = 0; j < Size; j++)
-                cells[i, j].SetHighlightPreview(false, false);
+                if (cells[i, j] != null) cells[i, j].SetHighlightPreview(false, false);
 
         if (previewCoords.Count == 0) return;
 
@@ -152,14 +154,16 @@ public class Board : MonoBehaviour
 
         foreach (Vector2Int coord in previewCoords)
         {
-            cells[coord.x, coord.y].SetHighlightPreview(true, false);
+            if (cells[coord.x, coord.y] != null) cells[coord.x, coord.y].SetHighlightPreview(true, false);
         }
 
         foreach (int r in potentialRows)
-            for (int c = 0; c < Size; c++) cells[r, c].SetHighlightPreview(true, true);
+            for (int c = 0; c < Size; c++) 
+                if (cells[r, c] != null) cells[r, c].SetHighlightPreview(true, true);
 
         foreach (int c in potentialCols)
-            for (int r = 0; r < Size; r++) cells[r, c].SetHighlightPreview(true, true);
+            for (int r = 0; r < Size; r++) 
+                if (cells[r, c] != null) cells[r, c].SetHighlightPreview(true, true);
     }
 
     public Cell GetCellAt(int r, int c) {

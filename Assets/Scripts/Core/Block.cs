@@ -93,6 +93,9 @@ public class Block : MonoBehaviour
 
     public void StartDragging()
     {
+        // MỚI: Phát âm thanh click ngay khi chạm vào khối
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(AudioManager.Instance.clickSound);
+
         _isDragging = true;
         
         // Đưa block ra phía trước cùng khi bắt đầu kéo
@@ -164,6 +167,9 @@ public class Block : MonoBehaviour
                 else if (TryPlace())
                 {
                     gameObject.SetActive(false);
+                    // MỚI: Phát âm thanh đặt gạch thành công
+                    if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(AudioManager.Instance.placeBlockSound);
+
                     if (_board != null) _board.CheckAndClearLines();
 
                     if (HoldManager.Instance != null) HoldManager.Instance.ResetHoldTurn();
