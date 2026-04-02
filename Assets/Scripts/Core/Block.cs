@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 public class Block : MonoBehaviour
@@ -111,9 +112,9 @@ public class Block : MonoBehaviour
 
     void Update()
     {
-        if (_isDragging)
+        if (_isDragging && Pointer.current != null)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Pointer.current.position.ReadValue());
             // Đặt Z âm để block gần Camera hơn, giúp nó hiển thị trên UI
             mousePos.z = -5f; 
 
@@ -127,7 +128,7 @@ public class Block : MonoBehaviour
 
             UpdatePreview();
 
-            if (Input.GetMouseButtonUp(0))
+            if (Pointer.current.press.wasReleasedThisFrame)
             {
                 _isDragging = false;
                 ClearPreview();

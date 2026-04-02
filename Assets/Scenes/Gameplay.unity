@@ -4494,6 +4494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Block
       objectReference: {fileID: 0}
+    - target: {fileID: 5846080214494990301, guid: 39e1b1ea0ca904b49938aa4d9762fe70, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4512,5 +4516,5 @@ SceneRoots:
   - {fileID: 1927479043}
   - {fileID: 757887268}
   - {fileID: 782298240}
-  - {fileID: 461674164}
   - {fileID: 869900144}
+  - {fileID: 461674164}
