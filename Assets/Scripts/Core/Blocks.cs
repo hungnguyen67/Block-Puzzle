@@ -210,23 +210,29 @@ public class Blocks : MonoBehaviour
             }
         }
 
-        // MỚI: Nếu tất cả khối đều không vừa, hãy xem ô HOLD có đang TRỐNG không
+        // MỚI: Logic Cứu thua tinh tế
         if (!anyBlockCanFit)
         {
             if (HoldManager.Instance != null)
             {
-                // Nếu ô Hold đang trống VÀ vẫn còn ít nhất 1 khối ở slot chính chưa dùng
-                bool hasAnyBlockLeft = false;
-                foreach (var b in _currentBlocks) if (b != null && b.activeSelf) { hasAnyBlockLeft = true; break; }
+                // Đếm số khối còn lại trong các slot
+                int remainingBlocksCount = 0;
+                foreach (var b in _currentBlocks) if (b != null && b.activeSelf) remainingBlocksCount++;
 
-                if (HoldManager.Instance.GetHeldBlock() == null && hasAnyBlockLeft)
+                // TRƯỜNG HỢP 1: Ô Hold đang trống
+                if (HoldManager.Instance.GetHeldBlock() == null)
                 {
-                    // Người chơi có thể cất khối này vào ô Hold để gọi wave mới -> CHƯA THUA!
-                    anyBlockCanFit = true;
+                    // Chỉ cứu thua nếu trên bàn CÒN DUY NHẤT 1 KHỐI (vì cất khối này đi sẽ gọi wave mới)
+                    // Nếu còn 2 hay 3 khối mà đều không vừa -> Thua luôn cho đỡ mất thời gian của người chơi
+                    if (remainingBlocksCount == 1)
+                    {
+                        anyBlockCanFit = true;
+                    }
                 }
-                else if (HoldManager.Instance.GetHeldBlock() != null)
+                // TRƯỜNG HỢP 2: Ô Hold đang có khối
+                else
                 {
-                    // Nếu Hold có khối rồi, kiểm tra xem khối đó có đặt được vào bàn không
+                    // Kiểm tra xem khối trong Hold có đặt được vào bàn không
                     Block heldBlock = HoldManager.Instance.GetHeldBlock();
                     if (heldBlock != null && board.CanFit(heldBlock.ShapeData))
                     {
