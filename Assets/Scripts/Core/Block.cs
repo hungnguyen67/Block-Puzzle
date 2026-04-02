@@ -12,14 +12,16 @@ public class Block : MonoBehaviour
     private bool _isDragging = false;
     private List<Vector2Int> _previewCoords = new List<Vector2Int>();
 
-    private float _blockDragOffset = 5.0f; 
+    private float _blockDragOffset = 2.0f; 
     private float scaleOnGrab = 1f; 
     private float worldCellSize = 1f; 
     public int[,] ShapeData { get; private set; } 
 
     private float _defaultScale = 1f;
-    private Vector3 _originalSpawnPos; 
-
+    private Vector3 _originalSpawnPos;
+    
+    public int shapeIndex; // Lưu index của hình khối
+    public int slotIndex;  // Lưu index vị trí spawn (0, 1, 2)
     void Start()
     {
         _board = Object.FindFirstObjectByType<Board>();
@@ -112,42 +114,74 @@ public class Block : MonoBehaviour
 
     void Update()
     {
+        // MỚI: Nếu game đang dừng (paused), không cập nhật di chuyển khối nữa
+        if (Time.timeScale == 0) return;
+
         if (_isDragging && Pointer.current != null)
         {
+            // Lấy vị trí chuột trong không gian thế giới
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Pointer.current.position.ReadValue());
-            // Đặt Z âm để block gần Camera hơn, giúp nó hiển thị trên UI
-            mousePos.z = -5f; 
+            mousePos.z = -2f; // Ép Z để luôn nhìn thấy trước Board
 
-            // Vị trí mong muốn: chuột ở dưới, block ở trên
+            // Tính toán vị trí mục tiêu (chuột nằm ở dưới, khối nằm ở trên)
             Vector3 targetPos = mousePos + Vector3.up * _blockDragOffset;
 
-            // Giới hạn block trong background
-            targetPos = ClampBlockInsideBackground(targetPos);
+            // Chỉ giới hạn nếu khối đang đi sâu vào bàn chơi
+            if (backgroundRenderer != null && targetPos.y > backgroundRenderer.bounds.min.y)
+            {
+                targetPos = ClampBlockInsideBackground(targetPos);
+            }
 
             transform.position = targetPos;
-
             UpdatePreview();
 
             if (Pointer.current.press.wasReleasedThisFrame)
             {
                 _isDragging = false;
                 ClearPreview();
-                
-                // Trả lại sorting order mặc định
                 SetSortingOrder(0);
 
-                if (TryPlace())
+                if (HoldManager.Instance != null && HoldManager.Instance.IsOverHoldPanel(Pointer.current.position.ReadValue()))
+                {
+                    if (HoldManager.Instance.HoldSelectedBlock())
+                    {
+                        // Sau khi cất vào Hold, check xem có hết khối chưa để sinh wave mới
+                        Blocks manager = Object.FindFirstObjectByType<Blocks>();
+                        if (manager != null) manager.CheckAndResetBlocks();
+                    }
+                    else
+                    {
+                        // Nếu đã dùng lượt hold rồi, bắt khối bay về chỗ cũ
+                        transform.position = _originalSpawnPos;
+                        transform.localScale = Vector3.one * _defaultScale;
+                        
+                        if (slotIndex == -99)
+                        {
+                            HoldManager.Instance.ReRegisterHeldBlock(this);
+                        }
+                    }
+                }
+                else if (TryPlace())
                 {
                     gameObject.SetActive(false);
                     if (_board != null) _board.CheckAndClearLines();
+
+                    if (HoldManager.Instance != null) HoldManager.Instance.ResetHoldTurn();
 
                     Blocks manager = Object.FindFirstObjectByType<Blocks>();
                     if (manager != null) manager.CheckAndResetBlocks();
                 }
                 else
                 {
+                    // Nếu đặt hụt, cho bay về vị trí cũ
                     transform.position = _originalSpawnPos;
                     transform.localScale = Vector3.one * _defaultScale;
+
+                    // MỚI: Nếu là khối ô HOLD, đăng ký lại với HoldManager để lần sau kéo tiếp được
+                    if (slotIndex == -99 && HoldManager.Instance != null)
+                    {
+                        HoldManager.Instance.ReRegisterHeldBlock(this);
+                    }
                 }
             }
         }
@@ -159,6 +193,18 @@ public class Block : MonoBehaviour
         foreach (var sr in renderers)
         {
             sr.sortingOrder = order;
+        }
+    }
+
+    public void SetTransparency(bool isFaded)
+    {
+        float alpha = isFaded ? 0.35f : 1.0f;
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+        foreach (var sr in renderers)
+        {
+            Color c = sr.color;
+            c.a = alpha;
+            sr.color = c;
         }
     }
 
@@ -227,10 +273,12 @@ public class Block : MonoBehaviour
         Cell originCell = _board.GetCellAt(0, 0);
         if (originCell == null) return false;
 
+        // Tính khoảng cách so với ô gốc (0,0)
         Vector3 worldDiff = child.position - originCell.transform.position;
 
-        c = Mathf.FloorToInt(worldDiff.x / worldCellSize + 0.5f);
-        r = Mathf.FloorToInt(worldDiff.y / worldCellSize + 0.5f);
+        // Làm tròn lấy số nguyên chính xác (hít vào giữa ô)
+        c = Mathf.RoundToInt(worldDiff.x / worldCellSize);
+        r = Mathf.RoundToInt(worldDiff.y / worldCellSize);
 
         return true;
     }

@@ -93,7 +93,16 @@ public class RewardFlow : MonoBehaviour
         if (board != null)
         {
             board.ClearMiddleRows();
+            // Đợi 0.4s để hiệu ứng xóa hàng hoàn tất rồi mới kiểm tra độ mờ
+            StartCoroutine(DelayRefresh(0.4f));
         }
+    }
+
+    private IEnumerator DelayRefresh(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        Blocks blocks = Object.FindFirstObjectByType<Blocks>();
+        if (blocks != null) blocks.RefreshAllBlocksTransparency();
     }
 
     public void ShowGameOver()

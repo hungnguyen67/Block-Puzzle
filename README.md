@@ -10,7 +10,7 @@
 - Không giới hạn thời gian.
 
 ## Cách chơi
-1. Kéo các khối từ khay chứa vào bảng 10x10 (hoặc 8x8 tùy phiên bản).
+1. Kéo các khối từ khay chứa vào bảng 8x8.
 2. Xếp các khối để tạo thành một hàng hoặc một cột đầy đủ.
 3. Hàng/cột đầy đủ sẽ bị xóa bỏ và bạn sẽ nhận được điểm.
 4. Trò chơi kết thúc khi không còn chỗ trống trên bảng để đặt khối tiếp theo.
