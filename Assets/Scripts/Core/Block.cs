@@ -166,11 +166,24 @@ public class Block : MonoBehaviour
                 }
                 else if (TryPlace())
                 {
+                    // TÍNH ĐIỂM KHI ĐẶT KHỐI
+                    if (_board != null)
+                    {
+                        int cellCount = 0;
+                        if (ShapeData != null)
+                        {
+                            for (int r = 0; r < ShapeData.GetLength(0); r++)
+                                for (int c = 0; c < ShapeData.GetLength(1); c++)
+                                    if (ShapeData[r, c] == 1) cellCount++;
+                        }
+                        
+                        _board.AddPlacementScore(cellCount, transform.position);
+                        _board.CheckAndClearLines();
+                    }
+
                     gameObject.SetActive(false);
                     // MỚI: Phát âm thanh đặt gạch thành công
                     if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(AudioManager.Instance.placeBlockSound);
-
-                    if (_board != null) _board.CheckAndClearLines();
 
                     if (HoldManager.Instance != null) HoldManager.Instance.ResetHoldTurn();
 

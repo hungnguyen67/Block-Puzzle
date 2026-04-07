@@ -108,12 +108,12 @@ public class GameplayUIManager : MonoBehaviour
             
             if (finalScoreText != null)
             {
-                finalScoreText.text = "Score: " + score.ToString();
+                finalScoreText.text = "Score " + score.ToString();
             }
 
             if (bestScoreText != null)
             {
-                bestScoreText.text = "BestScore: " + bestScore.ToString();
+                bestScoreText.text = "BestScore " + bestScore.ToString();
             }
 
             Time.timeScale = 0f; // Pause the game on game over

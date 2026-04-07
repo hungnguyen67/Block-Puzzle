@@ -60,6 +60,23 @@ public class Board : MonoBehaviour
         if (bestScoreText != null) bestScoreText.text = bestScore.ToString();
     }
 
+    public void AddPlacementScore(int cellCount, Vector3 pos)
+    {
+        int score = cellCount * 10;
+        AddScore(score, pos, false); // Không hiện text khi đặt khối
+    }
+
+    public void AddScore(int amount, Vector3 pos, bool spawnText = true)
+    {
+        currentScore += amount;
+        UpdateScoreUI();
+
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.AddScore(amount, pos, spawnText);
+        }
+    }
+
     public void CheckAndClearLines()
     {
         List<int> rowsToClear = new List<int>();
@@ -96,16 +113,19 @@ public class Board : MonoBehaviour
         {
             if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(AudioManager.Instance.clearLineSound);
 
-            int scoreToAdd = totalLines * 10;
-            currentScore += scoreToAdd;
-
-            UpdateScoreUI();
-
-            ScoreManager scoreMgr = ScoreManager.Instance;
-            if (scoreMgr != null)
+            // CÔNG THỨC ĐIỂM MỚI: Thăng tiến theo số hàng xóa được
+            int scoreToAdd = 0;
+            switch(totalLines)
             {
-                scoreMgr.AddScore(scoreToAdd);
+                case 1: scoreToAdd = 100; break;
+                case 2: scoreToAdd = 300; break; 
+                case 3: scoreToAdd = 600; break;
+                case 4: scoreToAdd = 1000; break;
+                default: scoreToAdd = totalLines * 300; break;
             }
+
+            // Cộng điểm và hiện text ở trung tâm bàn cờ (hoặc vị trí dòng cuối cùng)
+            AddScore(scoreToAdd, transform.position + new Vector3(0, yOffset, -1f));
         }
     }
 
